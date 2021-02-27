@@ -24,7 +24,6 @@ wee_extension --install weewx-wbug.ziop
       [[Sensors]]
           [[outTemp]]
             SensorId=ENTER_OUT_TEMP_SENSOR_ID                            
-          },
           [[outHumidity]]
             SensorId=ENTER_OUT_Humidity_SENSOR_ID                            
 
