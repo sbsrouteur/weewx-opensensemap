@@ -97,7 +97,7 @@ class OpenSenseMap(weewx.restx.StdRESTful):
         """
         super(OpenSenseMap, self).__init__(engine, config_dict)
         
-        site_dict = weewx.restx.get_site_dict(config_dict, 'OpenSenseMap', 'SensorBoxId',
+        site_dict = weewx.restx.get_site_dict(config_dict, 'OpenSenseMap', 'SensorId',
                                               'AuthKey', 'Sensors')
         if site_dict is None:
             return
