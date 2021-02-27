@@ -42,7 +42,7 @@ import weewx.restx
 import weewx.units
 from weeutil.weeutil import startOfDayUTC
 
-VERSION = "0.0"
+VERSION = "0.1"
 
 if weewx.__version__ < "3":
     raise weewx.UnsupportedFeature("weewx 3 is required, found %s" %
@@ -62,7 +62,7 @@ try:
 
     def logerr(msg):
         log.error(msg)
-    print("New Style Log Active")
+    
 except ImportError:
     # Old-style weewx logging
     import syslog
@@ -109,8 +109,7 @@ class OpenSenseMap(weewx.restx.StdRESTbase):
         self.archive_thread = OpenSenseMapThread(self.archive_queue, **site_dict)
         self.archive_thread.start()
         self.bind(weewx.NEW_ARCHIVE_RECORD, self.new_archive_record)
-        loginf("Data will be uploaded for OpenSenseMap station_number=%s " % 
-               (site_dict['station_number']))
+        log.info("Wunderground-PWS: Data for station %s will be posted", (site_dict['SensorId']))
 
     def new_archive_record(self, event):
         self.archive_queue.put(event.record)
@@ -182,16 +181,17 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
           rec = weewx.units.to_US(rec)        
         else:
           rec = weewx.units.to_METRIC(rec)
-        print(rec)
+        #print(rec)
         return rec
 
     def check_response(self, response):
-        print('server response : ')
+        #print('server response : ')
         #print(response)
         for line in response:
-          print(line)
-          #  if not line.startswith('Successfully Received'):
-          #      raise weewx.restx.FailedPost("Server response: %s" % line)
+            if not line.decode().startswith('"Measurements saved in box"'):
+                raise weewx.restx.FailedPost("Server response: %s" % line.decode())
+            else:
+              return
 
     def format_url(self, record):
         logdbg("record: %s" % record)
@@ -222,18 +222,12 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
     def post_request(self, request, data=None):
         data_bytes = six.ensure_binary(data) if data is not None else None
         #try:
-        print (data_bytes)
+        #print (data_bytes)
         _response = urllib.request.urlopen(request, data=data_bytes, timeout=self.timeout)
-        for line in _response:
-          print (line)
+        #for line in _response:
+        #  print (line)
         return _response
-        #except urllib.error.URLError as HTTPError:
-        #  print("Http Error %s"%(HTTPError.reason))
-        #except Exception as e:
-        #  print ('exception in urllib ')
-        #  print(e)
-        #return None
-
+        
     def handle_exception(self, e, count):
         """Check exception from HTTP post.  This simply logs the exception."""
         loginf("%s: Failed upload attempt %d: %s" % (self.protocol_name, count, e))
