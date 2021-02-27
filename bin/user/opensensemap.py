@@ -96,8 +96,7 @@ class OpenSenseMap(weewx.restx.StdRESTbase):
           SensorID : SensorID for API  
         """
         super(OpenSenseMap, self).__init__(engine, config_dict)
-        loginf("service version is %s" % VERSION)
-
+        
         site_dict = weewx.restx.get_site_dict(config_dict, 'OpenSenseMap', 'SensorBoxId',
                                               'AuthKey', 'Sensors')
         if site_dict is None:
@@ -109,7 +108,8 @@ class OpenSenseMap(weewx.restx.StdRESTbase):
         self.archive_thread = OpenSenseMapThread(self.archive_queue, **site_dict)
         self.archive_thread.start()
         self.bind(weewx.NEW_ARCHIVE_RECORD, self.new_archive_record)
-        log.info("Wunderground-PWS: Data for station %s will be posted", (site_dict['SensorId']))
+        loginf("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,site_dict['SensorId']))
+        print("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,site_dict['SensorId']))
 
     def new_archive_record(self, event):
         self.archive_queue.put(event.record)
