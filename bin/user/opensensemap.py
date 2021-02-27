@@ -85,7 +85,7 @@ def _get_rain(dbm, start_ts, end_ts):
                      dbm.table_name, (start_ts, end_ts))
     return val[0] if val is not None else None
 
-class OpenSenseMap(weewx.restx.StdRESTbase):
+class OpenSenseMap(weewx.restx.StdRESTful):
     def __init__(self, engine, config_dict):
         """This service recognizes standard restful options plus the following:
         SensorBoxId: OpenSenseMap Box identifier
