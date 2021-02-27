@@ -15,7 +15,7 @@ class OpenSenseMapInstaller(ExtensionInstaller):
             description='Upload weather data to OpenSenseMap.',
             author="sbsrouteur",
             author_email="sbsrouteur@free.fr",
-            restful_services='user.OpenSenseMap.OpenSenseMap',
+            restful_services='user.opensensemap.OpenSenseMap',
             config={
                 'StdRESTful': {
                     'OpenSenseMap': {
