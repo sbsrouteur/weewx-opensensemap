@@ -11,7 +11,7 @@ wget -O weewx-opensensemap.zip https://github.com/sbsrouteur/weewx-opensensemap/
 
 2) run the installer:
 
-wee_extension --install weewx-wbug.ziop
+wee_extension --install weewx-opensensemap.zip
 
 3) modify weewx.conf:
 
