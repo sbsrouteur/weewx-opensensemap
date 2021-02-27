@@ -15,7 +15,7 @@ wee_extension --install weewx-wbug.ziop
 
 3) modify weewx.conf:
 
-`
+```
 [StdRESTful]
     [[OpenSenseMap]]
       SensorId=INSERT_SENSORBOX_ID_HERE,
@@ -28,7 +28,7 @@ wee_extension --install weewx-wbug.ziop
           [[outHumidity]]
             SensorId=ENTER_OUT_Humidity_SENSOR_ID                            
 
-`  
+```  
 
 1) restart weewx
 
