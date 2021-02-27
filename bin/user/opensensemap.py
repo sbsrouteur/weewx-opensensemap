@@ -41,6 +41,7 @@ import weewx
 import weewx.restx
 import weewx.units
 from weeutil.weeutil import startOfDayUTC
+from weeutil.weeutil import to_bool
 
 VERSION = "0.1"
 
@@ -79,12 +80,6 @@ except ImportError:
     def logerr(msg):
         logmsg(syslog.LOG_ERR, msg)
 
-def _get_rain(dbm, start_ts, end_ts):
-    val = dbm.getSql("SELECT SUM(rain) FROM %s "
-                     "WHERE dateTime>? AND dateTime<=?" %
-                     dbm.table_name, (start_ts, end_ts))
-    return val[0] if val is not None else None
-
 class OpenSenseMap(weewx.restx.StdRESTful):
     def __init__(self, engine, config_dict):
         """This service recognizes standard restful options plus the following:
@@ -95,17 +90,22 @@ class OpenSenseMap(weewx.restx.StdRESTful):
           Key : WeewxValueName
           SensorID : SensorID for API  
         """
+        
         super(OpenSenseMap, self).__init__(engine, config_dict)
         
         site_dict = weewx.restx.get_site_dict(config_dict, 'OpenSenseMap', 'SensorId',
-                                              'AuthKey', 'Sensors')
+                                              'AuthKey','UsUnits')
+        
         if site_dict is None:
             return
+        Sensors=config_dict['StdRESTful']['OpenSenseMap']['Sensors']
+        if Sensors is None:
+            raise ("Missing sensors collection option")
         site_dict['manager_dict'] = weewx.manager.get_manager_dict(
             config_dict['DataBindings'], config_dict['Databases'], 'wx_binding')
 
         self.archive_queue = queue.Queue()
-        self.archive_thread = OpenSenseMapThread(self.archive_queue, **site_dict)
+        self.archive_thread = OpenSenseMapThread(self.archive_queue,Sensors, **site_dict)
         self.archive_thread.start()
         self.bind(weewx.NEW_ARCHIVE_RECORD, self.new_archive_record)
         loginf("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,site_dict['SensorId']))
@@ -149,8 +149,8 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
                  'humidity3':      ('extraHumid2', '%.0f'), # %
                  }
 """
-    def __init__(self, q,
-                 SensorId, AuthKey, Sensors, UsUnits,
+    def __init__(self, q, Sensors,
+                 SensorId, AuthKey, UsUnits,
                  manager_dict,
                  server_url=_SERVER_URL, skip_upload=False,
                  post_interval=None, max_backlog=sys.maxsize, stale=None,
@@ -172,16 +172,19 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
         self.AuthKey = AuthKey
         self.server_url = server_url
         self.Sensors = Sensors
-        self.UseUSUnits = UsUnits
+        self.UseUSUnits = to_bool(UsUnits)
+        #print(UsUnits)
+        #print(self.UseUSUnits)
 
     def get_record(self, record, dbm):
         rec = super(OpenSenseMapThread, self).get_record(record, dbm)
         # put everything into the right units
-        if self.UseUSUnits:
-          rec = weewx.units.to_US(rec)        
-        else:
+        #print(rec)
+        #print(self.UseUSUnits)
+        if not self.UseUSUnits :
           rec = weewx.units.to_METRIC(rec)
         #print(rec)
+        #print("OpenSenseMap : Get_Record")
         return rec
 
     def check_response(self, response):
@@ -213,10 +216,11 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
         Values={}
 
         for SensorName in self.Sensors:
-          Sensor=Sensors[SensorName]
-          Values[Sensor['SensorId']]=str(record[SensorName])
+          Sensor=self.Sensors[SensorName]
+          if SensorName in record and not record[SensorName] is None:
+            Values[Sensor['SensorId']]=str(record[SensorName])
         RetVal = json.dumps(Values, ensure_ascii=False)
-        print('Body Encoded as **%s**'% (RetVal))  
+        print('OpenSenseMap : Body Encoded as **%s**'% (RetVal))  
         return RetVal, 'application/json'
 
     def post_request(self, request, data=None):
@@ -251,7 +255,7 @@ if __name__ == "__main__":
 
     try:
         # WeeWX V4 logging
-        weeutil.logger.setup('OpenSenseMap', {})
+        weeutil.logger.set-up('OpenSenseMap', {})
     except NameError:
         # WeeWX V3 logging
         syslog.openlog('OpenSenseMap', syslog.LOG_PID | syslog.LOG_CONS)
