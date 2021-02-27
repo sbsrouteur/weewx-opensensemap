@@ -15,8 +15,7 @@ wee_extension --install weewx-wbug.ziop
 
 3) modify weewx.conf:
 
-'''
-[StdRESTful]
+`[StdRESTful]
     [[OpenSenseMap]]
       SensorId=INSERT_SENSORBOX_ID_HERE,
       AuthKey=INSERT_AUTH_KEY_HERE,
@@ -27,9 +26,9 @@ wee_extension --install weewx-wbug.ziop
           },
           [[outHumidity]]
             SensorId=ENTER_OUT_Humidity_SENSOR_ID                            
-          
-'''
-4) restart weewx
+        `  
+
+1) restart weewx
 
 sudo /etc/init.d/weewx stop
 sudo /etc/init.d/weewx start
