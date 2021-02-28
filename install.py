@@ -21,7 +21,7 @@ class OpenSenseMapInstaller(ExtensionInstaller):
                     'OpenSenseMap': {
                         'SensorId': 'INSERT_SENSORBOX_ID_HERE',
                         'AuthKey': 'INSERT_AUTH_KEY_HERE',
-                        'UsUnit':'False',
+                        'UsUnits':'False',
                         'enable':'True',
                         'Sensors':{
                           'outTemp':{
