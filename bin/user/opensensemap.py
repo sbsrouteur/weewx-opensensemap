@@ -108,8 +108,9 @@ class OpenSenseMap(weewx.restx.StdRESTful):
         self.archive_thread = OpenSenseMapThread(self.archive_queue,Sensors, **site_dict)
         self.archive_thread.start()
         self.bind(weewx.NEW_ARCHIVE_RECORD, self.new_archive_record)
-        loginf("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,site_dict['SensorId']))
-        print("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,site_dict['SensorId']))
+        self.LogginID = +site_dict['SensorId'][0:2]+"xxxxxxxx"+site_dict['SensorId'][-4:]
+        loginf("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,self.LogginID))
+        print("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,self.LogginID))
 
     def new_archive_record(self, event):
         self.archive_queue.put(event.record)
@@ -197,7 +198,7 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
         url = self.server_url + '/boxes/'+ self.SensorId + '/data'
         
         if weewx.debug >= 2:
-            loginf('url: %s' % re.sub(r"Key=[^\&]*", "Key=XXX", url))
+            loginf('url: %s' % re.sub(r"s\/.*\/", "s/XXXXXXXXXXXXXX/", url))
         return url
 
     def get_post_body(self, record):  # @UnusedVariable
@@ -288,9 +289,9 @@ if __name__ == "__main__":
     else:
       print("uploading to station %s" % options.id)
 
-    Sensors={'outTemp':{'SensorId':'6039fe0f2c4a41001be37274'}}
+    Sensors={'outTemp':{'SensorId':'603b5c4d2c4a41001b8db744'}}
     q = queue.Queue()
-    t = OpenSenseMapThread(q,options.id,options.AuthKey,Sensors,False,  manager_dict)
+    t = OpenSenseMapThread(q,Sensors,options.id,options.AuthKey,False,  manager_dict)
     t.start()
     q.put({'dateTime': int(time.time() + 0.5),
            'usUnits': weewx.US,
