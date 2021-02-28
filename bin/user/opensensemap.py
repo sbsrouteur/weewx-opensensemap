@@ -224,8 +224,12 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
               RecordValue=weewx.units.convert((record[SensorName],un),Sensor['Unit'])[0]
             else:
               RecordValue=record[SensorName]
-            print(RecordValue)
-            FormattedValue=f.get_format_string(un)%(RecordValue)
+            
+            if 'Format' in Sensor:
+              FormattedValue=Sensor['Format']%(RecordValue)
+            else:
+              FormattedValue=f.get_format_string(un)%(RecordValue)
+
             Values[Sensor['SensorId']]=FormattedValue
         RetVal = json.dumps(Values, ensure_ascii=False)
         print('OpenSenseMap : Body Encoded as **%s**'% (RetVal))  
@@ -300,7 +304,7 @@ if __name__ == "__main__":
     else:
       print("uploading to station %s" % options.id)
 
-    Sensors={'windSpeed':{'SensorId':'603b5c4d2c4a41001b8db744','Unit':"km_per_hour"},}
+    Sensors={'windSpeed':{'SensorId':'603b5c4d2c4a41001b8db744','Unit':"km_per_hour",'Format':'%.2f'},}
     q = queue.Queue()
     t = OpenSenseMapThread(q,Sensors,options.id,options.AuthKey,False,  manager_dict)
     t.start()
