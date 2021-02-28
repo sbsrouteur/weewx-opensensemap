@@ -211,11 +211,18 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
         Return a simple 'None' if there is no POST payload. This is the default.
         """
         Values={}
-
+        f = weewx.units.Formatter()
         for SensorName in self.Sensors:
           Sensor=self.Sensors[SensorName]
           if SensorName in record and not record[SensorName] is None:
-            Values[Sensor['SensorId']]=str(record[SensorName])
+            ug = weewx.units._getUnitGroup(SensorName)
+            if self.UseUSUnits:
+              un=weewx.units.USUnits[ug]
+            else:
+              un=weewx.units.MetricUnits[ug]
+            
+            FormattedValue=f.get_format_string(un)%(record[SensorName])
+            Values[Sensor['SensorId']]=FormattedValue
         RetVal = json.dumps(Values, ensure_ascii=False)
         print('OpenSenseMap : Body Encoded as **%s**'% (RetVal))  
         return RetVal, 'application/json'
