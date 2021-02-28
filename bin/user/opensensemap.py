@@ -234,15 +234,6 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
         RetVal = json.dumps(Values, ensure_ascii=False)
         print('OpenSenseMap : Body Encoded as **%s**'% (RetVal))  
         return RetVal, 'application/json'
-
-    def post_request(self, request, data=None):
-        data_bytes = six.ensure_binary(data) if data is not None else None
-        #try:
-        #print (data_bytes)
-        _response = urllib.request.urlopen(request, data=data_bytes, timeout=self.timeout)
-        #for line in _response:
-        #  print (line)
-        return _response
         
     def handle_exception(self, e, count):
         """Check exception from HTTP post.  This simply logs the exception."""
