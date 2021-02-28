@@ -10,11 +10,11 @@ Installation instructions:
 
 1) download
 
-`wget -O weewx-opensensemap.zip https://github.com/sbsrouteur/weewx-opensensemap/archive/V0.1.zip
-`
+`wget -O weewx-opensensemap.zip https://github.com/sbsrouteur/weewx-opensensemap/archive/V0.1.zip`
+
 2) run the installer:
 
-wee_extension --install weewx-opensensemap.zip
+`wee_extension --install weewx-opensensemap.zip`
 
 3) modify weewx.conf:
 
