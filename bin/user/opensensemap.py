@@ -43,7 +43,7 @@ import weewx.units
 from weeutil.weeutil import startOfDayUTC
 from weeutil.weeutil import to_bool
 
-VERSION = "0.1"
+VERSION = "0.2"
 
 if weewx.__version__ < "3":
     raise weewx.UnsupportedFeature("weewx 3 is required, found %s" %
@@ -220,8 +220,12 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
               un=weewx.units.USUnits[ug]
             else:
               un=weewx.units.MetricUnits[ug]
-            
-            FormattedValue=f.get_format_string(un)%(record[SensorName])
+            if 'Unit' in Sensor:
+              RecordValue=weewx.units.convert((record[SensorName],un),Sensor['Unit'])[0]
+            else:
+              RecordValue=record[SensorName]
+            print(RecordValue)
+            FormattedValue=f.get_format_string(un)%(RecordValue)
             Values[Sensor['SensorId']]=FormattedValue
         RetVal = json.dumps(Values, ensure_ascii=False)
         print('OpenSenseMap : Body Encoded as **%s**'% (RetVal))  
@@ -296,7 +300,7 @@ if __name__ == "__main__":
     else:
       print("uploading to station %s" % options.id)
 
-    Sensors={'outTemp':{'SensorId':'603b5c4d2c4a41001b8db744'}}
+    Sensors={'windSpeed':{'SensorId':'603b5c4d2c4a41001b8db744','Unit':"km_per_hour"},}
     q = queue.Queue()
     t = OpenSenseMapThread(q,Sensors,options.id,options.AuthKey,False,  manager_dict)
     t.start()
