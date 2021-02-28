@@ -108,7 +108,7 @@ class OpenSenseMap(weewx.restx.StdRESTful):
         self.archive_thread = OpenSenseMapThread(self.archive_queue,Sensors, **site_dict)
         self.archive_thread.start()
         self.bind(weewx.NEW_ARCHIVE_RECORD, self.new_archive_record)
-        self.LogginID = +site_dict['SensorId'][0:2]+"xxxxxxxx"+site_dict['SensorId'][-4:]
+        self.LogginID = site_dict['SensorId'][0:2]+"xxxxxxxx"+site_dict['SensorId'][-4:]
         loginf("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,self.LogginID))
         print("OpenSenseMap v%s: Data for station %s will be posted"% (VERSION,self.LogginID))
 
