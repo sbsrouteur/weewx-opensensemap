@@ -173,23 +173,19 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
         self.server_url = server_url
         self.Sensors = Sensors
         self.UseUSUnits = to_bool(UsUnits)
-        #print(UsUnits)
-        #print(self.UseUSUnits)
+
 
     def get_record(self, record, dbm):
         rec = super(OpenSenseMapThread, self).get_record(record, dbm)
         # put everything into the right units
-        #print(rec)
-        #print(self.UseUSUnits)
+
         if not self.UseUSUnits :
           rec = weewx.units.to_METRIC(rec)
-        #print(rec)
-        #print("OpenSenseMap : Get_Record")
+
         return rec
 
     def check_response(self, response):
-        #print('server response : ')
-        #print(response)
+
         for line in response:
             if not line.decode().startswith('"Measurements saved in box"'):
                 raise weewx.restx.FailedPost("Server response: %s" % line.decode())
