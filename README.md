@@ -36,5 +36,7 @@ Installation instructions:
 
 1) restart weewx
 
+```
 sudo /etc/init.d/weewx stop
 sudo /etc/init.d/weewx start
+```
