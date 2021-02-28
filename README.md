@@ -10,7 +10,7 @@ Installation instructions:
 
 1) download
 
-`wget -O weewx-opensensemap.zip https://github.com/sbsrouteur/weewx-opensensemap/archive/V0.1.zip`
+`wget -O weewx-opensensemap.zip https://github.com/sbsrouteur/weewx-opensensemap/archive/V0.2.zip`
 
 2) run the installer:
 
@@ -26,7 +26,9 @@ Installation instructions:
       UsUnit=False,
       [[Sensors]]
           [[outTemp]]
-            SensorId=ENTER_OUT_TEMP_SENSOR_ID                            
+            SensorId=ENTER_OUT_TEMP_SENSOR_ID
+            Unit=degree_C #Optional Unit override
+            Format=%0.3f #Optional Format override
           [[outHumidity]]
             SensorId=ENTER_OUT_Humidity_SENSOR_ID                            
 
@@ -34,5 +36,7 @@ Installation instructions:
 
 1) restart weewx
 
+```
 sudo /etc/init.d/weewx stop
 sudo /etc/init.d/weewx start
+```
