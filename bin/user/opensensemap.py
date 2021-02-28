@@ -251,7 +251,7 @@ if __name__ == "__main__":
 
     try:
         # WeeWX V4 logging
-        weeutil.logger.set-up('OpenSenseMap', {})
+        weeutil.logger.setup('OpenSenseMap', {})
     except NameError:
         # WeeWX V3 logging
         syslog.openlog('OpenSenseMap', syslog.LOG_PID | syslog.LOG_CONS)
