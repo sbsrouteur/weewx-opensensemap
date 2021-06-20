@@ -2,7 +2,7 @@
 
 weewx extension that sends data to OpenSenseMap
 
-Copyright 2011- sbsRouteur
+Copyright 2021- sbsRouteur
 
 Distributed under the terms of the MIT License
 
