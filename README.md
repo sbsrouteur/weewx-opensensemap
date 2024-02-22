@@ -24,12 +24,12 @@ Installation instructions:
       SensorId=INSERT_SENSORBOX_ID_HERE,
       AuthKey=INSERT_AUTH_KEY_HERE,
       UsUnits=False,
-      [[Sensors]]
-          [[outTemp]]
+      [[[Sensors]]]
+          [[[[outTemp]]]]
             SensorId=ENTER_OUT_TEMP_SENSOR_ID
             Unit=degree_C #Optional Unit override
             Format=%0.3f #Optional Format override
-          [[outHumidity]]
+          [[[[outHumidity]]]]
             SensorId=ENTER_OUT_Humidity_SENSOR_ID                            
 
 ```  
