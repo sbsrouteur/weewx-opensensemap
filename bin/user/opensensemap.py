@@ -221,7 +221,7 @@ class OpenSenseMapThread(weewx.restx.RESTThread):
             else:
               un=weewx.units.MetricUnits[ug]
             if 'Unit' in Sensor:
-              RecordValue=weewx.units.convert((record[SensorName],un),Sensor['Unit'])[0]
+              RecordValue=weewx.units.convert((record[SensorName],un,ug),Sensor['Unit'])[0]
             else:
               RecordValue=record[SensorName]
             
